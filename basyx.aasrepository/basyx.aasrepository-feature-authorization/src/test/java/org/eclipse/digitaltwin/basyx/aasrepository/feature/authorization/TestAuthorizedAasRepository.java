@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2023 the Eclipse BaSyx Authors
+ * Copyright (C) 2024 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -58,7 +58,7 @@ import org.eclipse.digitaltwin.basyx.http.serialization.BaSyxHttpTestUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -92,7 +92,7 @@ public class TestAuthorizedAasRepository {
 	public static void setUp() throws FileNotFoundException, IOException {
 		tokenProvider = new AccessTokenProvider(authenticaltionServerTokenEndpoint, clientId);
 
-		appContext = new SpringApplication(DummyAuthorizedAasRepositoryComponent.class).run(new String[] {});
+		appContext = new SpringApplicationBuilder(DummyAuthorizedAasRepositoryComponent.class).profiles("authorization").run(new String[] {});
 
 		aasRepo = appContext.getBean(AasRepository.class);
 
@@ -355,7 +355,7 @@ public class TestAuthorizedAasRepository {
 	public void addSubmodelReferenceWithCorrectRoleAndPermission() throws IOException {
 		String accessToken = getAccessToken(DummyCredentialStore.BASYX_UPDATER_CREDENTIAL);
 		
-		CloseableHttpResponse retrievalResponse = updateElementWithAuthorizationPostRequest(getSpecificAasSubmodelRefAccessURL(SPECIFIC_SHELL_ID), getAasJSONString("SingleSubmodelReference.json"), accessToken);
+		CloseableHttpResponse retrievalResponse = updateElementWithAuthorizationPostRequest(getSpecificAasSubmodelRefAccessURL(SPECIFIC_SHELL_ID), getAasJSONString("SingleSubmodelReference_1.json"), accessToken);
 		assertEquals(HttpStatus.CREATED.value(), retrievalResponse.getCode());
 	}
 	
@@ -363,7 +363,7 @@ public class TestAuthorizedAasRepository {
 	public void addSubmodelReferenceWithCorrectRoleAndSpecificAasPermission() throws IOException {		
 		String accessToken = getAccessToken(DummyCredentialStore.BASYX_UPDATER_TWO_CREDENTIAL);
 		
-		CloseableHttpResponse retrievalResponse = updateElementWithAuthorizationPostRequest(getSpecificAasSubmodelRefAccessURL(SPECIFIC_SHELL_ID), getAasJSONString("SingleSubmodelReference.json"), accessToken);
+		CloseableHttpResponse retrievalResponse = updateElementWithAuthorizationPostRequest(getSpecificAasSubmodelRefAccessURL(SPECIFIC_SHELL_ID), getAasJSONString("SingleSubmodelReference_2.json"), accessToken);
 		assertEquals(HttpStatus.CREATED.value(), retrievalResponse.getCode());
 	}
 	
@@ -371,7 +371,7 @@ public class TestAuthorizedAasRepository {
 	public void addSubmodelReferenceWithCorrectRoleAndUnauthorizedSpecificAas() throws IOException {
 		String accessToken = getAccessToken(DummyCredentialStore.BASYX_UPDATER_TWO_CREDENTIAL);
 		
-		CloseableHttpResponse retrievalResponse = updateElementWithAuthorizationPostRequest(getSpecificAasSubmodelRefAccessURL(SPECIFIC_SHELL_ID_2), getAasJSONString("SingleSubmodelReference.json"), accessToken);
+		CloseableHttpResponse retrievalResponse = updateElementWithAuthorizationPostRequest(getSpecificAasSubmodelRefAccessURL(SPECIFIC_SHELL_ID_2), getAasJSONString("SingleSubmodelReference_1.json"), accessToken);
 		assertEquals(HttpStatus.FORBIDDEN.value(), retrievalResponse.getCode());
 	}
 	
@@ -379,13 +379,13 @@ public class TestAuthorizedAasRepository {
 	public void addSubmodelReferenceWithInsufficientPermissionRole() throws IOException {
 		String accessToken = getAccessToken(DummyCredentialStore.BASYX_READER_CREDENTIAL);
 		
-		CloseableHttpResponse retrievalResponse = updateElementWithAuthorizationPostRequest(getSpecificAasSubmodelRefAccessURL(SPECIFIC_SHELL_ID), getAasJSONString("SingleSubmodelReference.json"), accessToken);
+		CloseableHttpResponse retrievalResponse = updateElementWithAuthorizationPostRequest(getSpecificAasSubmodelRefAccessURL(SPECIFIC_SHELL_ID), getAasJSONString("SingleSubmodelReference_1.json"), accessToken);
 		assertEquals(HttpStatus.FORBIDDEN.value(), retrievalResponse.getCode());
 	}
 	
 	@Test
 	public void addSubmodelReferenceWithNoAuthorization() throws IOException {
-		CloseableHttpResponse retrievalResponse = updateElementWithNoAuthorizationPostRequest(getSpecificAasSubmodelRefAccessURL(SPECIFIC_SHELL_ID), getAasJSONString("SingleSubmodelReference.json"));
+		CloseableHttpResponse retrievalResponse = updateElementWithNoAuthorizationPostRequest(getSpecificAasSubmodelRefAccessURL(SPECIFIC_SHELL_ID), getAasJSONString("SingleSubmodelReference_1.json"));
 		
 		assertEquals(HttpStatus.UNAUTHORIZED.value(), retrievalResponse.getCode());
 	}

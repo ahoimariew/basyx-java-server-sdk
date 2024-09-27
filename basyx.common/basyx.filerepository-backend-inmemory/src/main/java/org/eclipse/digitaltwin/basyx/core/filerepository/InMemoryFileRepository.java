@@ -33,10 +33,17 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
+import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
+import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
@@ -52,6 +59,14 @@ public class InMemoryFileRepository implements FileRepository {
 	private static final String TEMP_DIRECTORY_PREFIX = "basyx-temp";
 	private String tmpDirectory = getTemporaryDirectoryPath();
 
+	@Override
+	public List<InputStream> getAllFiles() {
+		
+		List<InputStream> list = null;
+		return  list;
+	}
+	
+	
 	@Override
 	public String save(FileMetadata fileMetadata) throws FileHandlingException {
 		String filePath = createFilePath(fileMetadata.getFileName());

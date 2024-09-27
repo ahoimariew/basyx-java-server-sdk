@@ -27,9 +27,16 @@ package org.eclipse.digitaltwin.basyx.core.filerepository;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
+import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
+import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -66,6 +73,14 @@ public class MongoDBFileRepository implements FileRepository {
 		return new GridFsTemplate(mongoTemplate.getMongoDatabaseFactory(), mongoTemplate.getConverter());
 	}
 
+	@Override
+	public List<InputStream> getAllFiles() {
+		
+		List<InputStream> list = null;
+		return  list;
+	}
+	
+	
 	@Override
 	public String save(FileMetadata fileMetadata) throws FileHandlingException {
 		

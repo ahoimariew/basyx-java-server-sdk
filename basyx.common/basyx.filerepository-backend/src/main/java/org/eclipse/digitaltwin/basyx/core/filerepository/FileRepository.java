@@ -26,9 +26,16 @@
 package org.eclipse.digitaltwin.basyx.core.filerepository;
 
 import java.io.InputStream;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
+import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
+import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
 
 /**
  * Interface representing a file repository. 
@@ -37,7 +44,13 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
  * @author danish
  */
 public interface FileRepository {
-	
+	/**
+	 * Retrieves all Instances of FileMetadata from the repository
+	 * 
+	 * @return a list of all found FileMetadata
+	 */
+	public List<InputStream>getAllFiles();
+
 	/**
 	 * Saves the file with provided {@link FileMetadata}.
 	 * 
@@ -71,5 +84,4 @@ public interface FileRepository {
 	 * @return
 	 */
 	public boolean exists(String fileId);
-
 }

@@ -31,11 +31,15 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
 import org.eclipse.digitaltwin.basyx.core.filerepository.FileMetadata;
 import org.eclipse.digitaltwin.basyx.core.filerepository.FileRepository;
+import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.junit.Test;
 
 /**
@@ -45,6 +49,16 @@ import org.junit.Test;
  */
 public abstract class FileRepositoryTestSuite {
 	protected abstract FileRepository getFileRepository();
+
+	@Test
+	public void retrieveAllFiles() {
+		FileRepository fileRepo = getFileRepository();
+		List<InputStream>expectedFiles =createAndSaveMultipleTestFiles(fileRepo);
+		//retrieve all	
+		List<InputStream> actualFiles = fileRepo.getAllFiles();
+		assertTrue(expectedFiles.equals(actualFiles));
+		
+	}
 
 	@Test
 	public void saveValidFile() {
@@ -148,5 +162,24 @@ public abstract class FileRepositoryTestSuite {
 			fileRepo.delete(filePath);
 		
 		return fileRepo.save(fileMetadata);
+	}
+	
+	protected List<InputStream> createAndSaveMultipleTestFiles(FileRepository fileRepo) {
+		List<InputStream> files = null;
+		for (int i = 0; i<3; i++) {
+			String name = "test" +i;
+			String contentType = "txt" +i;
+			String contentInput ="this is test data"+i;
+			InputStream content = new ByteArrayInputStream(contentInput.getBytes());
+			
+			if(fileRepo.exists(name))
+				fileRepo.delete(name);
+			
+			fileRepo.save(new FileMetadata(name, contentType, content));
+			
+			files.add(content);
+		}
+		return files;
+		
 	}
 }
